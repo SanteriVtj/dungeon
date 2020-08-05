@@ -108,21 +108,24 @@ char *nameGen(int len) {
     return(ret);
 }
 
+void pm(Game *game) {
+    for (int i = 0; i < game->numMonsters; i++) {
+        printf("%s\n", game->monsters[i].name);
+    }
+}
+
 void createMonsters(Game *game) {
-	(void) game; 
     unsigned int x_size = game->opts.mapWidth;
     unsigned int y_size = game->opts.mapHeight;
     unsigned int n_init = 0;
-    game->monsters = malloc(sizeof(Creature *) * game->opts.numMonsters);
-    for (unsigned int i = 0; i < x_size * y_size && n_init < game->opts.numMonsters; i++) {
+    game->monsters = malloc(sizeof(Creature *) * game->numMonsters);
+    for (unsigned int i = 0; i < x_size * y_size && n_init < game->numMonsters; i++) {
         int ri = (x_size * y_size) - i;
-        int rj = game->opts.numMonsters - 1;
-
-        if (rand() % ri < rj \
-            && isBlocked(game, i / x_size, i % x_size) == 0) {
+        int rj = game->numMonsters - n_init;
+        if (rand() % ri < rj && isBlocked(game, i % x_size, i / x_size) == 0) {
             Point *m_p = malloc(sizeof(Point));
-            m_p->x = i / x_size;
-            m_p->y = i % x_size;
+            m_p->x = i % x_size;
+            m_p->y = i / x_size;
             Creature *m = malloc(sizeof(Creature));
             char *n = nameGen(10);
             strcpy(m->name, n);
@@ -135,6 +138,7 @@ void createMonsters(Game *game) {
             n_init++;
         }
     }
+    pm(game);
 }
 
 /* Determine whether monster moves towards or away from player character.

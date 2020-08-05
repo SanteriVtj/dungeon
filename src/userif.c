@@ -152,10 +152,7 @@ void printMe(const Game *game)
  */
 int isBlocked(const Game *game, int x, int y)
 {
-	(void) game; 
-	(void) x; 
-	(void) y;
-	if (game->map.tile[y][x] != TILE_OPEN || game->map.tile[y][x] != TILE_ROOM || game->opts.mapWidth < (unsigned int) x || game->opts.mapHeight < (unsigned int) y) {
+	if (game->map.tile[y][x] == TILE_WALL || game->opts.mapWidth < (unsigned int) x || game->opts.mapHeight < (unsigned int) y) {
 		return(1);
 	}
     return(0); 
