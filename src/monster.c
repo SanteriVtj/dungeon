@@ -109,37 +109,39 @@ char *nameGen(int len) {
 }
 
 void pm(Game *game) {
-    for (int i = 0; i < game->numMonsters; i++) {
+    for (unsigned int i = 0; i < game->numMonsters; i++) {
         printf("%d: %s\n", i, game->monsters[i].name);
     }
 }
 
 void createMonsters(Game *game) {
-    unsigned int x_size = game->opts.mapWidth;
-    unsigned int y_size = game->opts.mapHeight;
-    game->monsters = malloc(sizeof(Creature *) * game->opts.numMonsters);
-    for (unsigned int i = 0; i < x_size * y_size && game->numMonsters < game->opts.numMonsters; i++) {
-        int ri = (x_size * y_size) - i;
-        int rj = game->opts.numMonsters - game->numMonsters;
-        // printf("hello: %d", isBlocked(game, i % x_size, i / x_size));
-        if (rand() % ri < rj && isBlocked(game, i % x_size, i / x_size) == 0) {
-            Point *m_p = malloc(sizeof(Point));
-            m_p->x = i % x_size;
-            m_p->y = i / x_size;
-            Creature *m = malloc(sizeof(Creature));
-            char *n = nameGen(10);
-            strcpy(m->name, n);
-            m->sign = n[0];
-            free(n);
-            m->pos = *m_p;
-            m->hp = 20;
-            m->maxhp = 100;
-            game->monsters[game->numMonsters] = *m;
-            game->numMonsters++;
+    game->monsters = malloc(sizeof(Creature) * game->opts.numMonsters);
+    printf("n = %d\n", game->opts.numMonsters);
+    int x, y;
+    for (game->numMonsters = 0; game->numMonsters < game->opts.numMonsters; game->numMonsters++) {
+        x = rand() % game->opts.mapWidth;
+        y = rand() % game->opts.mapHeight;
+
+        while(isBlocked(game, x, y) != 0) {
+            x = rand() % game->opts.mapWidth;
+            y = rand() % game->opts.mapHeight;
         }
+        Point *m_p = malloc(sizeof(Point));
+        m_p->x = x;
+        m_p->y = y;
+        Creature *m = malloc(sizeof(Creature));
+        char *n = nameGen(10);
+        strcpy(m->name, n);
+        m->sign = n[0];
+        m->pos = *m_p;
+        m->hp = 100;
+        m->maxhp = 100;
+        game->monsters[game->numMonsters] = *m;
+        free(n);
+        free(m);
+        free(m_p);
     }
-    printf("n: %d\n", game->numMonsters);
-    pm(game);
+    // pm(game);
 }
 
 /* Determine whether monster moves towards or away from player character.

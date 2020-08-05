@@ -150,9 +150,22 @@ void printMe(const Game *game)
  * Returns 1, if player character is not allowed to move to
  * given position (x,y). Returns 0, if moving is allowed
  */
+
+int isMon(const Game *game, int x, int y) {
+	for (unsigned int i = 0; i < game->numMonsters; i++) {
+		if (game->monsters[i].pos.x == x && game->monsters[i].pos.y == y) {
+			return(1);
+		}
+	}
+	return(0);
+}
+
 int isBlocked(const Game *game, int x, int y)
 {
-	if (game->map.tile[y][x] == TILE_WALL || game->opts.mapWidth < (unsigned int) x || game->opts.mapHeight < (unsigned int) y) {
+	if (game->opts.mapWidth < (unsigned int) x 
+		|| game->map.tile[y][x] == TILE_WALL 
+		|| game->opts.mapHeight < (unsigned int) y 
+		|| isMon(game, x, y) != 0) {
 		return(1);
 	}
     return(0); 
