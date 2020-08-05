@@ -110,18 +110,18 @@ char *nameGen(int len) {
 
 void pm(Game *game) {
     for (int i = 0; i < game->numMonsters; i++) {
-        printf("%s\n", game->monsters[i].name);
+        printf("%d: %s\n", i, game->monsters[i].name);
     }
 }
 
 void createMonsters(Game *game) {
     unsigned int x_size = game->opts.mapWidth;
     unsigned int y_size = game->opts.mapHeight;
-    unsigned int n_init = 0;
-    game->monsters = malloc(sizeof(Creature *) * game->numMonsters);
-    for (unsigned int i = 0; i < x_size * y_size && n_init < game->numMonsters; i++) {
+    game->monsters = malloc(sizeof(Creature *) * game->opts.numMonsters);
+    for (unsigned int i = 0; i < x_size * y_size && game->numMonsters < game->opts.numMonsters; i++) {
         int ri = (x_size * y_size) - i;
-        int rj = game->numMonsters - n_init;
+        int rj = game->opts.numMonsters - game->numMonsters;
+        // printf("hello: %d", isBlocked(game, i % x_size, i / x_size));
         if (rand() % ri < rj && isBlocked(game, i % x_size, i / x_size) == 0) {
             Point *m_p = malloc(sizeof(Point));
             m_p->x = i % x_size;
@@ -129,15 +129,16 @@ void createMonsters(Game *game) {
             Creature *m = malloc(sizeof(Creature));
             char *n = nameGen(10);
             strcpy(m->name, n);
+            m->sign = n[0];
             free(n);
-            m->sign = 'M';
             m->pos = *m_p;
             m->hp = 20;
             m->maxhp = 100;
-            game->monsters[n_init] = *m;
-            n_init++;
+            game->monsters[game->numMonsters] = *m;
+            game->numMonsters++;
         }
     }
+    printf("n: %d\n", game->numMonsters);
     pm(game);
 }
 
