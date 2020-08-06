@@ -69,7 +69,7 @@ typedef struct Queue {
 } Queue;
 
 Queue *initQueue(int len) {
-    Queue *q = (Queue*) malloc(sizeof(Queue));
+    Queue *q = (Queue*) malloc(sizeof(Queue) * len);
     if (!q) return NULL;
     q->size= 0;
     q->front = NULL;
@@ -106,7 +106,26 @@ void freeQ(Queue *q) {
 }
 
 int bfs(Game *g, Creature *m) {
-    
+    int dist[g->opts.mapHeight][g->opts.mapWidth];
+    memset(dist, 50000, sizeof(int) * g->opts.mapHeight * g->opts.mapWidth);
+    dist[m->pos.y][m->pos.x] = 0;
+    Queue *q = initQueue(g->opts.mapHeight * g->opts.mapWidth);
+    Node *n = malloc(sizeof(Node));
+    n->p = &m->pos;
+    n->prev = NULL;
+    enqueue(q, n);
+    while (q->size != 0) {
+        n = dequeue(q);
+        for (int i = -1; i <= 1; i++) {
+            if (i != 0 && isBlocked(g, (n->p->x + i), n->p->y) == 0 && ) {
+
+                enqueue(q, )
+            }
+            if (i != 0 && isBlocked(g, n->p->x, (n->p->y + i)) == 0) {
+
+            }
+        }
+    }
     return(1);
 }
 
