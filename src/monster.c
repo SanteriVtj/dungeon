@@ -57,6 +57,59 @@ void attackPunch(Game *game, Creature *monst) {
  * Move monster 'monst' towards the player character.
  * See exercise description for more detailed rules.
  */
+
+typedef struct node_st {
+    Point *p;
+    struct node_st *prev;
+} Node;
+
+typedef struct Queue {
+    Node *front, *rear;
+    int size;
+} Queue;
+
+Queue *initQueue(int len) {
+    Queue *q = (Queue*) malloc(sizeof(Queue));
+    if (!q) return NULL;
+    q->size= 0;
+    q->front = NULL;
+    q->rear = NULL;
+    return q;
+}
+
+void enqueue(Queue *q, Node *n) {
+    if (q->size == 0) return;
+    if (q->size == 0) {
+        q->front = n;
+        q->rear = n;
+    } else {
+        q->rear->prev = n;
+        q->rear = n;
+    }
+    q->size++;
+}
+
+Node *dequeue(Queue *q) {
+    if (q->front == q->rear) return NULL;
+    Node *n = q->front;
+    q->front = q->front->prev;
+    q->size--;
+    return n;
+}
+
+void freeQ(Queue *q) {
+    while(q->size != 0) {
+        Node *n = dequeue(q);
+        free(n->p);
+        free(n);
+    }
+}
+
+int bfs(Game *g, Creature *m) {
+    
+    return(1);
+}
+
 void moveTowards(const Game *game, Creature *monst) {
 	(void) game; 
 	(void) monst; 
