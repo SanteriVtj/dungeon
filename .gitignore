@@ -1,6 +1,5 @@
 desc-en.md
 desc-fi.md
-Makefile
-/.vscode
-main
-/main.dSYM
+.vscode/
+src/main
+src/main.dSYM/
