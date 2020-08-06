@@ -117,15 +117,43 @@ int bfs(Game *g, Creature *m) {
     while (q->size != 0) {
         n = dequeue(q);
         for (int i = -1; i <= 1; i++) {
-            if (i != 0 && isBlocked(g, (n->p->x + i), n->p->y) == 0 && ) {
-
-                enqueue(q, )
+            if (dist[n->p->y][n->p->x + i] == 0 || dist[n->p->y][n->p->x + i] == 50000) {
+                continue;
+            } else {
+                if (i != 0 && isBlocked(g, (n->p->x + i), n->p->y) == 0) {
+                    Point *p1 = malloc(sizeof(Point));
+                    p1->x = n->p->x + i;
+                    p1->y = n->p->y;
+                    Node *n1 = malloc(sizeof(Node));
+                    n1->p = p1;
+                    n1->prev = NULL;
+                    enqueue(q, n1);
+                    free(p1);
+                    free(n1);
+                    dist[n->p->y][n->p->x + i] = dist[n->p->y][n->p->x] + 1;
+                }
             }
-            if (i != 0 && isBlocked(g, n->p->x, (n->p->y + i)) == 0) {
 
+            if (dist[n->p->y + i][n->p->x] == 0 || dist[n->p->y + i][n->p->x] == 50000) {
+                continue;
+            } else {
+                if (i != 0 && isBlocked(g, n->p->x, (n->p->y + i)) == 0) {
+                    Point *p2 = malloc(sizeof(Point));
+                    p2->x = n->p->x;
+                    p2->y = n->p->y + i;
+                    Node *n2 = malloc(sizeof(Node));
+                    n2->p = p2;
+                    n2->prev = NULL;
+                    enqueue(q, n2);
+                    free(p2);
+                    free(n2);
+                    dist[n->p->y + i][n->p->x] = dist[n->p->y][n->p->x] + 1;
+                }
             }
         }
     }
+    int 
+    free(n);
     return(1);
 }
 
