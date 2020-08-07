@@ -6,6 +6,7 @@
 #include <string.h>
 #include <math.h>
 #include "dungeon.h"
+#define MIN(a, b) ((a < b) ? a : b)
 
 // for defining some monster types below that can be used in the game
 typedef struct {
@@ -105,13 +106,13 @@ void freeQ(Queue *q) {
     }
 }
 
-int bfs(Game *g, Creature *m) {
+int bfs(const Game *g, Point *start) {
     int dist[g->opts.mapHeight][g->opts.mapWidth];
     memset(dist, 50000, sizeof(int) * g->opts.mapHeight * g->opts.mapWidth);
-    dist[m->pos.y][m->pos.x] = 0;
+    dist[start->y][start->x] = 0;
     Queue *q = initQueue(g->opts.mapHeight * g->opts.mapWidth);
     Node *n = malloc(sizeof(Node));
-    n->p = &m->pos;
+    n->p = start;
     n->prev = NULL;
     enqueue(q, n);
     while (q->size != 0) {
@@ -152,15 +153,54 @@ int bfs(Game *g, Creature *m) {
             }
         }
     }
-    int 
+    int ret = dist[g->position.y][g->position.x];
+    for (int i = 0; i < g->opts.mapHeight; i++) {
+        free(dist[i]);
+    }
+    free(dist);
     free(n);
-    return(1);
+    freeQ(q);
+    return(ret);
 }
 
 void moveTowards(const Game *game, Creature *monst) {
-	(void) game; 
-	(void) monst; 
-    
+    printf("moveTowards called\n");
+    int distance = 50000;
+    Point *loc = malloc(sizeof(Point));
+    int x_dist;
+    int y_dist;
+    Point *p1 = malloc(sizeof(Point));
+    Point *p2 = malloc(sizeof(Point));
+    for (int i = -1; i < 1; i++) {
+        if (i != 0) {
+            if (isBlocked(game, monst->pos.x + i, monst->pos.y) == 0) {
+                p1->x = monst->pos.x + i;
+                p1->y = monst->pos.y;
+                x_dist = bfs(game, p1);
+            }
+            if (isBlocked(game, monst->pos.x, monst->pos.y + i) == 0) {
+                p2->x = monst->pos.x;
+                p2->y = monst->pos.y + i;
+                y_dist = bfs(game, p2);
+            }
+
+            if (distance <= MIN(x_dist, y_dist)) {
+                continue;
+            } else {
+                if (x_dist <= y_dist) {
+                    loc = p1;
+                } else {
+                    loc = p2;
+                }
+            }
+        }
+    }
+    free(p1);
+    free(p2);
+    printf("x: %d y: %d\n", monst->pos.x, monst->pos.y);
+    monst->pos = *loc;
+    printf("x: %d y: %d\n", monst->pos.x, monst->pos.y);
+    free(loc);
 }
 
 /* Exercise (d)
