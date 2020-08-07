@@ -7,6 +7,7 @@
 #include <math.h>
 #include "dungeon.h"
 #define MIN(a, b) ((a < b) ? a : b)
+#define MAX(a, b) ((a > b) ? a : b)
 
 // for defining some monster types below that can be used in the game
 typedef struct {
@@ -210,9 +211,43 @@ void moveTowards(const Game *game, Creature *monst) {
  * See exercise description for more detailed rules.
  */
 void moveAway(const Game *game, Creature *monst) {
-	(void) game; 
-	(void) monst; 
-    
+	printf("moveAway called\n");
+    int distance = 0;
+    Point loc;
+    loc.x = monst->pos.x;
+    loc.y = monst->pos.y;
+    int x_dist = 0;
+    int y_dist = 0;
+    Point *p1 = malloc(sizeof(Point));
+    Point *p2 = malloc(sizeof(Point));
+    for (int i = -1; i < 1; i++) {
+        if (i != 0) {
+            if (isBlocked(game, monst->pos.x + i, monst->pos.y) == 0) {
+                p1->x = monst->pos.x + i;
+                p1->y = monst->pos.y;
+                x_dist = bfs(game, p1);
+            }
+            if (isBlocked(game, monst->pos.x, monst->pos.y + i) == 0) {
+                p2->x = monst->pos.x;
+                p2->y = monst->pos.y + i;
+                y_dist = bfs(game, p2);
+            }
+
+            if (distance >= MAX(x_dist, y_dist)) {
+                continue;
+            } else {
+                if (x_dist >= y_dist) {
+                    loc = *p1;
+                } else {
+                    loc = *p2;
+                }
+            }
+        }
+    }
+    monst->pos.x = loc.x;
+    monst->pos.y = loc.y;
+    free(p1);
+    free(p2);
 }
 
 
