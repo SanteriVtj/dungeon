@@ -160,12 +160,20 @@ int isMon(const Game *game, int x, int y) {
 	return(0);
 }
 
+int isPlayer(const Game *game, int x, int y) {
+	if (game->position.x == x && game->position.y == y) {
+		return(1);
+	}
+	return(0);
+}
+
 int isBlocked(const Game *game, int x, int y)
 {
 	if (game->opts.mapWidth < (unsigned int) x 
 		|| game->map.tile[y][x] == TILE_WALL 
 		|| game->opts.mapHeight < (unsigned int) y 
-		|| isMon(game, x, y) != 0) {
+		|| isMon(game, x, y) != 0
+		|| isPlayer(game, x, y) != 0) {
 		return(1);
 	}
     return(0); 
