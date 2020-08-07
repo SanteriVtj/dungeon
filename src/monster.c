@@ -104,6 +104,7 @@ void freeQ(Queue *q) {
         free(n->p);
         free(n);
     }
+    free(q);
 }
 
 int bfs(const Game *g, Point *start) {
@@ -154,10 +155,10 @@ int bfs(const Game *g, Point *start) {
         }
     }
     int ret = dist[g->position.y][g->position.x];
-    for (int i = 0; i < g->opts.mapHeight; i++) {
-        free(dist[i]);
-    }
-    free(dist);
+    // for (unsigned int i = 0; i < g->opts.mapHeight; i++) {
+    //     free(dist[i]);
+    // }
+    // free(dist);
     free(n);
     freeQ(q);
     return(ret);
@@ -166,9 +167,11 @@ int bfs(const Game *g, Point *start) {
 void moveTowards(const Game *game, Creature *monst) {
     printf("moveTowards called\n");
     int distance = 50000;
-    Point *loc = malloc(sizeof(Point));
-    int x_dist;
-    int y_dist;
+    Point loc;
+    loc.x = monst->pos.x;
+    loc.y = monst->pos.y;
+    int x_dist = 50000;
+    int y_dist = 50000;
     Point *p1 = malloc(sizeof(Point));
     Point *p2 = malloc(sizeof(Point));
     for (int i = -1; i < 1; i++) {
@@ -188,19 +191,17 @@ void moveTowards(const Game *game, Creature *monst) {
                 continue;
             } else {
                 if (x_dist <= y_dist) {
-                    loc = p1;
+                    loc = *p1;
                 } else {
-                    loc = p2;
+                    loc = *p2;
                 }
             }
         }
     }
+    monst->pos.x = loc.x;
+    monst->pos.y = loc.y;
     free(p1);
     free(p2);
-    printf("x: %d y: %d\n", monst->pos.x, monst->pos.y);
-    monst->pos = *loc;
-    printf("x: %d y: %d\n", monst->pos.x, monst->pos.y);
-    free(loc);
 }
 
 /* Exercise (d)
